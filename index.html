@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  
+    <title>Train Schedule</title>
+</head>
+<body>
+    <div class="display">
+        <input class="XXL" id="header_display" />
+    </div>
+        
+    <!-- <nav class="navbar navbar-light bg-light">
+        <span class="navbar-brand h1 text-center">Train Schedule</span>
+    </nav> -->
+  <!-- <div class="container my-4">
+        <p class="h4">Current Train Schedule</p>
+    <div class="row  text-muted">
+        <hr color="black" width="100%"></hr>
+        <div class="col-sm-2"><p class="h6">Employee Name</p>
+        </div>
+        <div class="col-sm-2"><p class="h6">Role</p>
+</div>
+        <div class="col-sm-2"><p class="h6">Start Date</p>
+        </div>
+        <div class="col-sm-2"><p class="h6">Months Worked</p>
+        </div>
+        <div class="col-sm-2"><p class="h6">Monthly rate</p>
+</div> -->
+        <!-- <div class="col-sm-2"><p class="h6">Total Billed</p>
+</div>
+      </div>
+  </div> -->
+
+  <div id="results" class="container align-items-left mt-3 w-100 p-3">
+      <h2 class="h4"><b>Current Train Schedule</b></h2>
+    <td class="table"></td>
+
+    <table class="table text-left">
+        <thead>
+          <tr class="bg-white text-dark">
+            <th scope="col">Train Name</th>
+            <th scope="col">Destination</th>
+            <th scope="col">Frequency</th>
+            <th scope="col">Next Arrival</th>
+            <th scope="col">Minutes Away</th>
+          </tr>
+        </thead>
+        <tbody id="train-list">
+          
+        </tbody>
+      </table>
+
+  <!-- <div id="results" class="container">
+        <div class="row ">
+            <hr color="#d3d3d3" width="100%"></hr>
+            <div class="col-sm-2">${TrainName}</div>
+            <div class="col-sm-2">Japanese Death Metal Bassist</div>
+            <div class="col-sm-2">01-01-18</div>
+            <div class="col-sm-2">2</div>
+            <div class="col-sm-2">$1000</div>
+            <div class="col-sm-2">$1M</div>
+        </div> -->
+  </div>
+      <div class="container my-3">
+            <div class="row align-items-left mt-3">
+              <p class="h4"><b>Add Employees</b></p>
+              <div class="col-md-12 sm-2">
+                  <div class="row mb-3">
+                      <div class="userInput mb-3"></div>
+                      <input type="text" placeholder="Train Name"class=" form-control mb-3" id="TrainName">
+                      <input type="text" placeholder="Destination"class="form-control mb-3" id="destination">
+                      <input type="text" placeholder="First Train Time"class="form-control mb-3" id="firstTrainTime">
+                      <input type="text" placeholder="Frequency"class=" form-control mb-3" id="frequency">
+                      <div class="btn-group" role="group" aria-label="Basic example">
+                      </div>  
+                  </div>
+      
+                      <div class="row align-items-left mt-3">
+                          <button type="button" class="btn btn-dark" id="btn-search">Submit</button>
+                      </div>
+      
+              </div>
+            </div>
+          </div>
+
+
+<!-- ========================================== START CODING BELOW!! -->
+<script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+<!-- <script src="moment-timezone-with-data.js"></script> -->
+
+
+<!-- jQuery -->
+  <script src="https://code.jquery.com/jquery.js"></script>
+  
+
+    
+<!-- Initialize Firebase -->
+<script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>
+
+<script>
+
+  var config = {
+    apiKey: "AIzaSyDdPS1FSl17iBsZ_IkuMXpMLzs4SjMzfqg",
+    authDomain: "train-schedule-315e3.firebaseapp.com",
+    databaseURL: "https://train-schedule-315e3.firebaseio.com",
+    projectId: "train-schedule-315e3",
+    storageBucket: "train-schedule-315e3.appspot.com",
+    messagingSenderId: "693402672556"
+  };
+  firebase.initializeApp(config);
+    
+    const database = firebase.database();
+
+//     database.ref().push({
+//   TrainName: "Got it yet?",
+//   destination: "Portsmouth, NH",
+//   firstTrainTime: "0800",
+//   frequency: 102
+// }
+// );
+
+    var dataRef = firebase.database();
+    
+    // Initial Values
+    var TrainName = "";
+    var frequency = "";
+    var firstTrainTime = "";
+    var destination = "";
+    
+    // Capture Button Click
+    $("#btn-search").on("click", function(event) {
+      event.preventDefault();
+      
+      // YOUR TASK!!!
+      // Code in the logic for storing and retrieving the most recent user.
+      // Don't forget to provide initial data to your Firebase database.
+      TrainName = $("#TrainName").val().trim();
+      destination = $("#destination").val().trim();
+      firstTrainTime = $("#firstTrainTime").val().trim();
+      frequency = $("#frequency").val().trim();
+      
+      // Code for the push
+      dataRef.ref().push({
+        
+        TrainName: TrainName,
+        destination: destination,
+        firstTrainTime: firstTrainTime,
+        frequency: frequency,
+        
+      });
+    });
+    
+    // Firebase watcher + initial loader HINT: This code behaves similarly to .on("value")
+    dataRef.ref().on("child_added", function(childSnapshot) {
+      
+      // Log everything that's coming out of snapshot
+      console.log(childSnapshot.val().TrainName);
+      console.log(childSnapshot.val().destination);
+      console.log(childSnapshot.val().firstTrainTime);
+      console.log(childSnapshot.val().frequency);
+      
+      //Insert Logic
+
+var firstTime = childSnapshot.val().firstTrainTime;
+
+var tFrequency = parseInt(childSnapshot.val().frequency);
+
+
+
+// First Time (pushed back 1 year to make sure it comes before current time)
+var firstTimeConverted = moment(firstTime, "HH:mm").subtract(1, "years");
+console.log(firstTimeConverted);
+
+// Current Time
+var currentTime = moment();
+console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
+
+// Difference between the times
+var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
+console.log("DIFFERENCE IN TIME: " + diffTime);
+
+// Time apart (remainder)
+var tRemainder = diffTime % tFrequency;
+console.log(tRemainder);
+
+// Minute Until Train
+var tMinutesTillTrain = tFrequency - tRemainder;
+console.log("MINUTES TILL TRAIN: " + tMinutesTillTrain);
+
+// Next Train
+var nextTrain = moment().add(tMinutesTillTrain, "minutes");
+console.log("ARRIVAL TIME: " + moment(nextTrain).format("hh:mm"));
+
+var nextTrainUi = moment(nextTrain).format("ddd, hA");
+
+
+      // full list of items to the well
+      $("#train-list").append("<tr><td> " + childSnapshot.val().TrainName +
+        " </td><td> " + childSnapshot.val().destination + "</td><td>" + childSnapshot.val().frequency + "</td><td>" + nextTrainUi + "</td><td>"+ tMinutesTillTrain + "</td></tr>");
+
+      //-------------
+//       var gmtDateTime = nextTrainUi.utc("2015-10-24 20:00", "YYYY-MM-DD HH")
+// var local = gmtDateTime.local().format('YYYY-MMM-DD h:mm A');
+      //-------------
+
+
+      // Handle the errors
+    }, function(errorObject) {
+      console.log("Errors handled: " + errorObject.code);
+    });
+        
+    dataRef.ref().orderByChild("dateAdded").limitToLast(1).on("child_added", function(snapshot) {
+      // Change the HTML to reflect
+      $("#TrainName").text(snapshot.val().TrainName);
+      $("#firstTrainTime").text(snapshot.val().destination);
+      $("#destination").text(snapshot.val().firstTrainTime);
+      $("#frequency").text(snapshot.val().fr);
+
+
+
+    });
+  </script>
+
+  
+
+  <!-- ____________________________________ -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script
+  src="https://code.jquery.com/jquery-3.3.1.js"
+  integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+  crossorigin="anonymous"></script>
+
+
+</body>
+</html>
